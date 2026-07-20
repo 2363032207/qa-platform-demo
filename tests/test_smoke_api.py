@@ -20,9 +20,7 @@ def test_echo_status_404_should_return_404():
 
     assert response.status_code == 404
 
-
-
-def test_demo():
-	res = requests.get("https://postman-echo.com/get?foo=bar")
-	data=res.json()
-	assert data["args"]["foo"] == "bar"
+def test_echo_get_with_query_foo():
+    response = requests.get(f"{BASE_URL}/get", params={"foo": "bar"}, timeout=10)
+    assert response.status_code == 200
+    assert response.json()["args"]["foo"] == "bar"

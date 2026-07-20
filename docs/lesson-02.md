@@ -10,6 +10,7 @@
 需要各个方面都考虑都，这样才能确保当前版本具备基本稳定性
 
 ## 4. 本次实操：你跑 pytest 的结果（复制终端摘要）
+```text
 platform win32 -- Python 3.10.11, pytest-8.3.5, pluggy-1.6.0 -- C:\Users\linjiahao\Projects\qa-platform-demo\.venv\Scripts\python.exe
 cachedir: .pytest_cache
 rootdir: C:\Users\linjiahao\Projects\qa-platform-demo
@@ -17,6 +18,4 @@ collected 2 items
 
 tests/test_smoke_api.py::test_echo_get_should_return_200 PASSED                                                  [ 50%]
 tests/test_smoke_api.py::test_echo_status_404_should_return_404 PASSED                                           [100%]
-```text
-粘贴这里
 ```
