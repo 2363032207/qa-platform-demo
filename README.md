@@ -5,7 +5,14 @@
 ## 环境
 
 - Python 3.10+
-- 创建虚拟环境后安装依赖（第 2 课起）
+- Windows PowerShell：
+
+```powershell
+cd C:\Users\linjiahao\Projects\qa-platform-demo
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+pytest -v
+```
 
 ## 目录
 
@@ -17,4 +24,4 @@
 ## 当前进度
 
 - [x] 第 1 课：仓库初始化
-- [ ] 第 2 课：pytest 冒烟
+- [ ] 第 2 课：pytest 冒烟（进行中）
