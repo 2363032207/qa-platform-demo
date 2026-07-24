@@ -1,0 +1,3 @@
+# 默认练习环境；可用环境变量 QA_BASE_URL 覆盖
+base_url: https://postman-echo.com
+timeout: 10
