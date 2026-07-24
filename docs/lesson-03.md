@@ -10,7 +10,7 @@ config.yaml解决了团队通用的、相对稳定的配置，QA_BASE_URL解决�
 
 ## 3. conftest.py 里的 fixture 是干什么的？
 
-前置准备
+> pytest 在跑用例前**自动准备好** `api_client`（一个配好的 `HttpClient`），用例只要写参数 `api_client` 就能用，不用每条自己 `new`。
 
 ## 4. 本次实操：pytest -v 结果摘要
 
