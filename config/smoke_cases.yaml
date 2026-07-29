@@ -1,0 +1,40 @@
+# 数据驱动冒烟用例（与 ai-qa-kit/examples/smoke_cases_v1.md 对齐）
+cases:
+  - id: S1
+    title: 获取回显成功
+    method: GET
+    path: /get
+    expected_status: 200
+    json_contains_key: url
+
+  - id: S2
+    title: 带查询参数回显
+    method: GET
+    path: /get
+    params:
+      foo: bar
+    expected_status: 200
+    json_path: args.foo
+    expected_value: bar
+
+  - id: S3
+    title: 状态码 404
+    method: GET
+    path: /status/404
+    expected_status: 404
+
+  - id: S4
+    title: POST JSON 回显
+    method: POST
+    path: /post
+    json_body:
+      name: ling
+    expected_status: 200
+    json_path: json.name
+    expected_value: ling
+
+  - id: S5
+    title: get 500
+    method: GET
+    path: /status/500
+    expected_status: 500

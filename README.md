@@ -25,7 +25,8 @@ pytest -v
 
 - `tests/` 用例（`conftest.py` 提供 `api_client`）
 - `config/config.yaml` 环境与超时
-- `core/` 框架核心（`settings.py`、`http_client.py`）
+- `config/smoke_cases.yaml` 数据驱动用例表
+- `core/` 框架核心（`settings.py`、`http_client.py`、`case_loader.py`）
 - `ai-qa-kit/` AI Prompt 与评审清单
 - `docs/` 笔记与设计
 
@@ -33,4 +34,5 @@ pytest -v
 
 - [x] 第 1 课：仓库初始化
 - [x] 第 2 课：pytest 冒烟
-- [ ] 第 3 课：HttpClient 分层 + 配置（进行中）
+- [x] 第 3 课：HttpClient 分层 + 配置
+- [ ] 第 4 课：数据驱动 + AI 缺陷报告（进行中）
