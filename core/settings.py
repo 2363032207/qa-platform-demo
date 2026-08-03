@@ -17,8 +17,9 @@ def load_settings() -> dict[str, Any]:
 
     base_url = os.environ.get("QA_BASE_URL", data.get("base_url", "")).rstrip("/")
     timeout = int(os.environ.get("QA_TIMEOUT", data.get("timeout", 10)))
+    retry = int(os.environ.get("QA_RETRY", data.get("retry", 0)))
 
     if not base_url:
         raise ValueError("base_url 未配置，请检查 config/config.yaml 或 QA_BASE_URL")
 
-    return {"base_url": base_url, "timeout": timeout}
+    return {"base_url": base_url, "timeout": timeout, "retry": retry}
