@@ -6,11 +6,11 @@
 
 ## 2. Dockerfile 在这里起什么作用？
 
-自动化构建依赖和拷贝代码
+自动化构建依赖和拷贝代码只是装依赖，还保证**任何人/任何机器**用同一环境跑测试
 
 ## 3. GitHub Actions 里 `on: push` 和 `jobs.test.steps` 各干什么？
 
-on:push推送代码时触发  `jobs.test.steps自动拉取代码和自动化测试` 
+on:push：**什么时候**触发流水线  `jobs.test.steps：`触发后**具体做哪些步骤**（拉代码 → 装包 → pytest）
 
 ## 4. 本次实操结果（贴命令输出或 Actions 截图说明）
 
@@ -40,4 +40,6 @@ tests/test_smoke_driven.py::test_smoke_from_yaml[S5] PASSED                     
 ================================================= 12 passed in 3.65s ==================================================
 ==> Done. Report: reports\junit.xml
 ```
+
+1. **PR 时 CI 红了，不该合入** 
 
