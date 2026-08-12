@@ -69,4 +69,5 @@ docker run --rm qa-platform-demo
 ## 当前进度
 
 - [x] 第 1～6 课
-- [ ] 第 7 课：FastAPI 平台 API（进行中）
+- [x] 第 7 课：FastAPI 平台 API
+- [ ] 第 8 课：Agent 执行器（待开始）

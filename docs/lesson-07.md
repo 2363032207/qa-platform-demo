@@ -10,11 +10,11 @@
 
 ## 2. `POST /api/jobs` 和 `POST /api/jobs/{id}/result` 分别谁调用？
 
-## `POST /api/jobs由发起测试的人调用，POST /api/jobs/{id}/result已经完成测试的人`
+## `POST /api/jobs由你/ci/看板，POST /api/jobs/{id}/result由agent` 
 
 ## 3. Swagger `/docs` 页面有什么用？
 
-方便其他人员调用
+方便**调试、联调、给别人试接口**，不只是「方便调用」
 
 ## 4. 本次实操：`pytest tests/test_platform_api.py -v` 结果
 
