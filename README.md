@@ -32,20 +32,49 @@ pytest -v
 
 ## 测试平台 API（第 7 课）
 
+**CMD（命令提示符）** — 提示符是 `C:\...>` 时用：
+
+```cmd
+scripts\run_api.bat
+```
+
+**PowerShell** — 提示符是 `PS C:\...>` 时用：
+
 ```powershell
-pip install -r requirements.txt
 .\scripts\run_api.ps1
+```
+
+或直接（CMD / PowerShell 都行）：
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn qa_platform.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 浏览器打开 Swagger：`http://127.0.0.1:8000/docs`
 
-| 接口 | 作用 |
-|------|------|
-| `GET /health` | 健康检查 |
-| `POST /api/jobs` | 创建测试任务 |
-| `GET /api/jobs` | 任务列表 |
-| `GET /api/jobs/{id}` | 任务详情 |
-| `POST /api/jobs/{id}/result` | 回传执行结果 |
+| 接口 | 作用 | 谁调 |
+|------|------|------|
+| `GET /health` | 健康检查 | 任何人 |
+| `POST /api/jobs` | 创建测试任务 | 发起者（你/CI/看板） |
+| `GET /api/jobs` | 任务列表 | 发起者/看板 |
+| `POST /api/jobs/next` | 领取下一个 queued 任务 | **Agent** |
+| `GET /api/jobs/{id}` | 任务详情 | 发起者/看板 |
+| `POST /api/jobs/{id}/result` | 回传执行结果 | **Agent** |
+
+## Agent 执行器（第 8 课）
+
+开两个终端：
+
+```powershell
+# 终端 1：启动 API
+.\scripts\run_api.ps1
+
+# 终端 2：创建任务（Swagger 或 curl）后，跑 Agent 一次
+.\.venv\Scripts\python.exe -m agent.runner --once
+
+# 或循环监听
+.\.venv\Scripts\python.exe -m agent.runner --loop --interval 5
+```
 
 ## CI / Docker（第 6 课）
 
@@ -70,4 +99,4 @@ docker run --rm qa-platform-demo
 
 - [x] 第 1～6 课
 - [x] 第 7 课：FastAPI 平台 API
-- [ ] 第 8 课：Agent 执行器（待开始）
+- [ ] 第 8 课：Agent 执行器（进行中）

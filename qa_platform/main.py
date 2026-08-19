@@ -7,7 +7,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 
 from qa_platform.database import init_db
-from qa_platform.repository import create_job, get_job, list_jobs, submit_result
+from qa_platform.repository import (
+    claim_next_job,
+    create_job,
+    get_job,
+    list_jobs,
+    submit_result,
+)
 from qa_platform.schemas import JobCreate, JobDetailOut, JobOut, JobResultCreate, JobResultOut
 
 
@@ -19,8 +25,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="QA Platform Demo",
-    description="迷你测试平台 API（第 7 课）",
-    version="0.1.0",
+    description="迷你测试平台 API（第 7～8 课）",
+    version="0.2.0",
     lifespan=lifespan,
 )
 
@@ -38,6 +44,15 @@ def api_create_job(payload: JobCreate) -> JobOut:
 @app.get("/api/jobs", response_model=list[JobOut])
 def api_list_jobs(limit: int = 20) -> list[JobOut]:
     return list_jobs(limit=limit)
+
+
+@app.post("/api/jobs/next", response_model=JobOut)
+def api_claim_next_job() -> JobOut:
+    """Agent 领取下一个排队任务（queued → running）。"""
+    job = claim_next_job()
+    if job is None:
+        raise HTTPException(status_code=404, detail="no queued job")
+    return job
 
 
 @app.get("/api/jobs/{job_id}", response_model=JobDetailOut)

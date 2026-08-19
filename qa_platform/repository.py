@@ -41,6 +41,32 @@ def list_jobs(limit: int = 20) -> list[JobOut]:
     return [_row_to_job(row) for row in rows]
 
 
+def claim_next_job() -> JobOut | None:
+    """领取最早一条 queued 任务，状态改为 running（供 Agent 使用）。"""
+    conn = get_connection()
+    row = conn.execute(
+        """
+        SELECT * FROM jobs
+        WHERE status = 'queued'
+        ORDER BY id ASC
+        LIMIT 1
+        """
+    ).fetchone()
+    if row is None:
+        conn.close()
+        return None
+
+    now = _now()
+    conn.execute(
+        "UPDATE jobs SET status = 'running', updated_at = ? WHERE id = ? AND status = 'queued'",
+        (now, row["id"]),
+    )
+    conn.commit()
+    updated = conn.execute("SELECT * FROM jobs WHERE id = ?", (row["id"],)).fetchone()
+    conn.close()
+    return _row_to_job(updated)
+
+
 def get_job(job_id: int) -> JobDetailOut | None:
     conn = get_connection()
     row = conn.execute("SELECT * FROM jobs WHERE id = ?", (job_id,)).fetchone()
