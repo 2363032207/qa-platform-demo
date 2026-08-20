@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QA Platform 看板</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --card: #1a2332;
+      --text: #e7ecf3;
+      --muted: #8b9bb4;
+      --ok: #3dd68c;
+      --fail: #f07178;
+      --queue: #ffcc66;
+      --run: #82aaff;
+      --line: #2a3548;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { margin: 0; font-size: 20px; }
+    header a { color: var(--run); text-decoration: none; }
+    main { padding: 24px 28px; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .card .label { color: var(--muted); font-size: 12px; }
+    .card .value { font-size: 28px; margin-top: 6px; font-weight: 600; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    th { color: var(--muted); font-weight: 500; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .queued { background: #3a2f12; color: var(--queue); }
+    .running { background: #1b2a4a; color: var(--run); }
+    .success { background: #123526; color: var(--ok); }
+    .failed { background: #3a1518; color: var(--fail); }
+    .empty { color: var(--muted); padding: 32px; text-align: center; }
+    .hint { color: var(--muted); font-size: 13px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>QA Platform 结果看板</h1>
+    <a href="/docs">Swagger 文档</a>
+  </header>
+  <main>
+    <div class="cards">
+      <div class="card"><div class="label">任务总数</div><div class="value">{{ summary.total }}</div></div>
+      <div class="card"><div class="label">成功</div><div class="value" style="color:var(--ok)">{{ summary.success }}</div></div>
+      <div class="card"><div class="label">失败</div><div class="value" style="color:var(--fail)">{{ summary.failed }}</div></div>
+      <div class="card"><div class="label">排队 / 执行中</div><div class="value" style="color:var(--queue)">{{ summary.pending }}</div></div>
+      <div class="card"><div class="label">通过率</div><div class="value">{{ summary.pass_rate }}</div></div>
+    </div>
+
+    {% if jobs %}
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>状态</th>
+          <th>执行器</th>
+          <th>通过 / 失败 / 合计</th>
+          <th>单次通过率</th>
+          <th>更新时间</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr>
+          <td>#{{ job.id }}</td>
+          <td><span class="badge {{ job.status }}">{{ job.status }}</span></td>
+          <td>{{ job.runner_type }}</td>
+          <td>
+            {% if job.result %}
+              {{ job.result.passed }} / {{ job.result.failed }} / {{ job.result.total }}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td>
+            {% if job.result and job.result.total > 0 %}
+              {{ ((job.result.passed / job.result.total) * 100) | round(1) }}%
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td>{{ job.updated_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">还没有任务。先在 Swagger 创建任务，再用 Agent 跑一次。</div>
+    {% endif %}
+
+    <p class="hint">页面每 10 秒自动刷新。创建任务：POST /api/jobs；执行：python -m agent.runner --once</p>
+  </main>
+  <script>setTimeout(function () { location.reload(); }, 10000);</script>
+</body>
+</html>

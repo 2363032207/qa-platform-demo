@@ -4,13 +4,19 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from pathlib import Path
 
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+from qa_platform.dashboard import build_summary
 from qa_platform.database import init_db
 from qa_platform.repository import (
     claim_next_job,
     create_job,
     get_job,
+    list_job_details,
     list_jobs,
     submit_result,
 )
@@ -25,10 +31,25 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="QA Platform Demo",
-    description="迷你测试平台 API（第 7～8 课）",
-    version="0.2.0",
+    description="迷你测试平台 API（第 7～9 课）",
+    version="0.3.0",
     lifespan=lifespan,
 )
+
+_TEMPLATES = Jinja2Templates(directory=str(Path(__file__).resolve().parent / "templates"))
+
+
+@app.get("/", response_class=HTMLResponse)
+def dashboard(request: Request):
+    jobs = list_job_details(limit=50)
+    return _TEMPLATES.TemplateResponse(
+        "dashboard.html",
+        {
+            "request": request,
+            "jobs": jobs,
+            "summary": build_summary(jobs),
+        },
+    )
 
 
 @app.get("/health")

@@ -26,7 +26,7 @@ pytest -v
 - `tests/` 用例（`conftest.py` 提供 `api_client`）
 - `config/` 环境与用例表（`config.yaml`、`smoke_cases.yaml`）
 - `core/` 框架核心（`settings.py`、`http_client.py`、`case_loader.py`）
-- `qa_platform/` 迷你测试平台 API（FastAPI，第 7 课）
+- `qa_platform/` 迷你测试平台（FastAPI + 看板）
 - `ai-qa-kit/` AI Prompt 与评审清单
 - `docs/` 笔记与设计
 
@@ -50,7 +50,8 @@ scripts\run_api.bat
 .\.venv\Scripts\python.exe -m uvicorn qa_platform.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-浏览器打开 Swagger：`http://127.0.0.1:8000/docs`
+浏览器打开 Swagger：`http://127.0.0.1:8000/docs`  
+结果看板：`http://127.0.0.1:8000/`
 
 | 接口 | 作用 | 谁调 |
 |------|------|------|
@@ -100,4 +101,4 @@ docker run --rm qa-platform-demo
 - [x] 第 1～6 课
 - [x] 第 7 课：FastAPI 平台 API
 - [x] 第 8 课：Agent 执行器
-- [ ] 第 9 课：结果看板（待开始）
+- [ ] 第 9 课：结果看板（进行中）

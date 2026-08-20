@@ -41,6 +41,17 @@ def list_jobs(limit: int = 20) -> list[JobOut]:
     return [_row_to_job(row) for row in rows]
 
 
+def list_job_details(limit: int = 20) -> list[JobDetailOut]:
+    """任务列表 + 结果，供看板使用。"""
+    jobs = list_jobs(limit=limit)
+    details: list[JobDetailOut] = []
+    for job in jobs:
+        detail = get_job(job.id)
+        if detail is not None:
+            details.append(detail)
+    return details
+
+
 def claim_next_job() -> JobOut | None:
     """领取最早一条 queued 任务，状态改为 running（供 Agent 使用）。"""
     conn = get_connection()
