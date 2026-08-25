@@ -103,4 +103,5 @@ docker run --rm qa-platform-demo
 - [x] 第 7 课：FastAPI 平台 API
 - [x] 第 8 课：Agent 执行器
 - [x] 第 9 课：结果看板
-- [ ] 第 10 课：AI 失败摘要（进行中）
+- [x] 第 10 课：AI 失败摘要
+- [ ] 第 11 课：质量门禁（待开始）
