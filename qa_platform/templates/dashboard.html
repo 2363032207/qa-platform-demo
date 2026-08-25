@@ -146,7 +146,46 @@
     <div class="empty">还没有任务。先在 Swagger 创建任务，再用 Agent 跑一次。</div>
     {% endif %}
 
-    <p class="hint">页面每 10 秒自动刷新。失败任务会自动生成摘要（无 API Key 时用本地规则）。详见 docs/AI_IN_PLATFORM.md</p>
+    <h2 style="margin:28px 0 12px;font-size:16px;">性能基线采样</h2>
+    {% if perf_runs %}
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>场景</th>
+          <th>设备 / 包体</th>
+          <th>avg / min FPS</th>
+          <th>P95 FrameTime</th>
+          <th>结论</th>
+          <th>时间</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for run in perf_runs %}
+        <tr>
+          <td>#{{ run.id }}</td>
+          <td>{{ run.scenario }}</td>
+          <td>{{ run.device or "—" }} / {{ run.build or "—" }}</td>
+          <td>{{ run.avg_fps }} / {{ run.min_fps }}</td>
+          <td>{{ run.frame_time_p95_ms }} ms</td>
+          <td>
+            {% if run.passed %}
+              <span class="badge success">PASS</span>
+            {% else %}
+              <span class="badge failed">FAIL</span>
+            {% endif %}
+            <div class="summary">{{ run.reason }}</div>
+          </td>
+          <td>{{ run.created_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">还没有性能采样。用 Swagger 调 POST /api/perf/runs 录入一次。</div>
+    {% endif %}
+
+    <p class="hint">页面每 10 秒自动刷新。失败任务会自动生成摘要（无 API Key 时用本地规则）。性能规则见 docs/PERF_BASELINE.md</p>
   </main>
   <script>setTimeout(function () { location.reload(); }, 10000);</script>
 </body>

@@ -1,0 +1,27 @@
+# 性能基线（第 12 课）
+# 真实项目中：同一机型 + 同一场景，用 PerfDog 多轮稳定结果再定阈值。
+# 本文件是演示用默认值（按约 60fps 目标）。
+
+defaults:
+  avg_fps_min: 55
+  min_fps_min: 45
+  frame_time_p95_ms_max: 40
+  avg_cpu_pct_max: 80
+  max_temp_c_max: 45
+
+scenarios:
+  combat_dense:
+    description: 高密度战斗（多怪/满特效）
+    avg_fps_min: 50
+    min_fps_min: 40
+    frame_time_p95_ms_max: 45
+  lobby:
+    description: 大厅挂机
+    avg_fps_min: 55
+    min_fps_min: 50
+    frame_time_p95_ms_max: 33
+  chapter_load:
+    description: 切层 / 进战斗加载后 30s
+    avg_fps_min: 48
+    min_fps_min: 35
+    frame_time_p95_ms_max: 50

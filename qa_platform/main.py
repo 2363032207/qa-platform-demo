@@ -13,6 +13,8 @@ from fastapi.templating import Jinja2Templates
 from qa_platform.dashboard import build_summary
 from qa_platform.database import init_db
 from qa_platform.gate import evaluate_counts
+from qa_platform.perf import evaluate_metrics
+from qa_platform.perf_repository import create_perf_run, list_perf_runs
 from qa_platform.repository import (
     claim_next_job,
     create_job,
@@ -29,6 +31,10 @@ from qa_platform.schemas import (
     JobOut,
     JobResultCreate,
     JobResultOut,
+    PerfEvaluateIn,
+    PerfEvaluateOut,
+    PerfRunCreate,
+    PerfRunOut,
 )
 
 
@@ -41,7 +47,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="QA Platform Demo",
     description="迷你测试平台",
-    version="0.5.0",
+    version="0.6.0",
     lifespan=lifespan,
 )
 
@@ -51,12 +57,14 @@ _TEMPLATES = Jinja2Templates(directory=str(Path(__file__).resolve().parent / "te
 @app.get("/", response_class=HTMLResponse)
 def dashboard(request: Request):
     jobs = list_job_details(limit=50)
+    perf_runs = list_perf_runs(limit=20)
     return _TEMPLATES.TemplateResponse(
         "dashboard.html",
         {
             "request": request,
             "jobs": jobs,
             "summary": build_summary(jobs),
+            "perf_runs": perf_runs,
         },
     )
 
@@ -111,3 +119,29 @@ def api_evaluate_gate(payload: GateEvaluateIn) -> GateEvaluateOut:
         ai_summary=payload.ai_summary,
     )
     return GateEvaluateOut(**result.to_dict())
+
+
+@app.post("/api/perf/evaluate", response_model=PerfEvaluateOut)
+def api_evaluate_perf(payload: PerfEvaluateIn) -> PerfEvaluateOut:
+    """性能基线评估：只对比指标，不入库。"""
+    m = payload.metrics
+    result = evaluate_metrics(
+        payload.scenario,
+        avg_fps=m.avg_fps,
+        min_fps=m.min_fps,
+        frame_time_p95_ms=m.frame_time_p95_ms,
+        avg_cpu_pct=m.avg_cpu_pct,
+        max_temp_c=m.max_temp_c,
+    )
+    return PerfEvaluateOut(**result.to_dict())
+
+
+@app.post("/api/perf/runs", response_model=PerfRunOut)
+def api_create_perf_run(payload: PerfRunCreate) -> PerfRunOut:
+    """录入一次性能采样：自动对比基线并入库。"""
+    return create_perf_run(payload)
+
+
+@app.get("/api/perf/runs", response_model=list[PerfRunOut])
+def api_list_perf_runs(limit: int = 20) -> list[PerfRunOut]:
+    return list_perf_runs(limit=limit)

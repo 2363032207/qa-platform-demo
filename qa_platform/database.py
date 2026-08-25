@@ -39,6 +39,22 @@ def init_db() -> None:
             created_at TEXT NOT NULL,
             FOREIGN KEY (job_id) REFERENCES jobs(id)
         );
+
+        CREATE TABLE IF NOT EXISTS perf_runs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            scenario TEXT NOT NULL,
+            device TEXT NOT NULL DEFAULT '',
+            build TEXT NOT NULL DEFAULT '',
+            avg_fps REAL NOT NULL,
+            min_fps REAL NOT NULL,
+            frame_time_p95_ms REAL NOT NULL,
+            avg_cpu_pct REAL,
+            max_temp_c REAL,
+            passed INTEGER NOT NULL,
+            reason TEXT NOT NULL DEFAULT '',
+            note TEXT NOT NULL DEFAULT '',
+            created_at TEXT NOT NULL
+        );
         """
     )
     # 兼容旧库：已有表时补齐 ai_summary 列

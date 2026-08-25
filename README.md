@@ -63,6 +63,11 @@ scripts\run_api.bat
 | `GET /api/jobs/{id}` | 任务详情 | 发起者/看板 |
 | `POST /api/jobs/{id}/result` | 回传执行结果 | **Agent** |
 | `POST /api/gates/evaluate` | 质量门禁评估 | CI / 发起者 |
+| `POST /api/perf/evaluate` | 性能基线评估（不入库） | 发起者 |
+| `POST /api/perf/runs` | 录入性能采样并对比基线 | 发起者 / 采集脚本 |
+| `GET /api/perf/runs` | 性能采样列表 | 发起者 / 看板 |
+
+性能基线说明：`docs/PERF_BASELINE.md`，阈值配置：`config/perf_baseline.yaml`。
 
 ## Agent 执行器（第 8 课）
 
@@ -115,4 +120,5 @@ docker run --rm qa-platform-demo
 - [x] 第 9 课：结果看板
 - [x] 第 10 课：AI 失败摘要
 - [x] 第 11 课：质量门禁
-- [ ] 第 12 课：性能基线（待开始）
+- [x] 第 12 课：性能基线
+- [ ] 第 13 课：作品集收尾（待开始）
