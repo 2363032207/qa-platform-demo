@@ -6,6 +6,7 @@ import json
 from datetime import datetime, timezone
 from typing import Any
 
+from qa_platform.ai_summary import summarize_failure
 from qa_platform.database import get_connection
 from qa_platform.schemas import JobCreate, JobDetailOut, JobOut, JobResultCreate, JobResultOut
 
@@ -105,18 +106,36 @@ def submit_result(job_id: int, payload: JobResultCreate) -> JobResultOut | None:
 
     now = _now()
     status = "success" if payload.failed == 0 else "failed"
+    ai_summary = ""
+    if payload.failed > 0:
+        ai_summary = summarize_failure(
+            job_id=job_id,
+            passed=payload.passed,
+            failed=payload.failed,
+            total=payload.total,
+            message=payload.message,
+        )
     conn.execute(
         """
-        INSERT INTO job_results (job_id, passed, failed, total, message, created_at)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO job_results (job_id, passed, failed, total, message, ai_summary, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(job_id) DO UPDATE SET
             passed=excluded.passed,
             failed=excluded.failed,
             total=excluded.total,
             message=excluded.message,
+            ai_summary=excluded.ai_summary,
             created_at=excluded.created_at
         """,
-        (job_id, payload.passed, payload.failed, payload.total, payload.message, now),
+        (
+            job_id,
+            payload.passed,
+            payload.failed,
+            payload.total,
+            payload.message,
+            ai_summary,
+            now,
+        ),
     )
     conn.execute(
         "UPDATE jobs SET status = ?, updated_at = ? WHERE id = ?",
@@ -143,11 +162,13 @@ def _row_to_job(row: Any) -> JobOut:
 
 
 def _row_to_result(row: Any) -> JobResultOut:
+    keys = row.keys()
     return JobResultOut(
         job_id=row["job_id"],
         passed=row["passed"],
         failed=row["failed"],
         total=row["total"],
         message=row["message"] or "",
+        ai_summary=(row["ai_summary"] or "") if "ai_summary" in keys else "",
         created_at=row["created_at"],
     )

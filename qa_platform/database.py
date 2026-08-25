@@ -35,10 +35,17 @@ def init_db() -> None:
             failed INTEGER NOT NULL DEFAULT 0,
             total INTEGER NOT NULL DEFAULT 0,
             message TEXT,
+            ai_summary TEXT,
             created_at TEXT NOT NULL,
             FOREIGN KEY (job_id) REFERENCES jobs(id)
         );
         """
     )
+    # 兼容旧库：已有表时补齐 ai_summary 列
+    columns = {
+        row[1] for row in conn.execute("PRAGMA table_info(job_results)").fetchall()
+    }
+    if "ai_summary" not in columns:
+        conn.execute("ALTER TABLE job_results ADD COLUMN ai_summary TEXT")
     conn.commit()
     conn.close()

@@ -59,6 +59,7 @@
       padding: 10px 12px;
       border-bottom: 1px solid var(--line);
       font-size: 14px;
+      vertical-align: top;
     }
     th { color: var(--muted); font-weight: 500; }
     .badge {
@@ -73,6 +74,13 @@
     .failed { background: #3a1518; color: var(--fail); }
     .empty { color: var(--muted); padding: 32px; text-align: center; }
     .hint { color: var(--muted); font-size: 13px; margin-top: 16px; }
+    .summary {
+      white-space: pre-wrap;
+      color: var(--muted);
+      font-size: 12px;
+      max-width: 360px;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -98,6 +106,7 @@
           <th>执行器</th>
           <th>通过 / 失败 / 合计</th>
           <th>单次通过率</th>
+          <th>失败摘要</th>
           <th>更新时间</th>
         </tr>
       </thead>
@@ -121,6 +130,13 @@
               —
             {% endif %}
           </td>
+          <td>
+            {% if job.result and job.result.ai_summary %}
+              <div class="summary">{{ job.result.ai_summary }}</div>
+            {% else %}
+              —
+            {% endif %}
+          </td>
           <td>{{ job.updated_at }}</td>
         </tr>
         {% endfor %}
@@ -130,7 +146,7 @@
     <div class="empty">还没有任务。先在 Swagger 创建任务，再用 Agent 跑一次。</div>
     {% endif %}
 
-    <p class="hint">页面每 10 秒自动刷新。创建任务：POST /api/jobs；执行：python -m agent.runner --once</p>
+    <p class="hint">页面每 10 秒自动刷新。失败任务会自动生成摘要（无 API Key 时用本地规则）。详见 docs/AI_IN_PLATFORM.md</p>
   </main>
   <script>setTimeout(function () { location.reload(); }, 10000);</script>
 </body>

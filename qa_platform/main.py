@@ -31,8 +31,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="QA Platform Demo",
-    description="迷你测试平台 API（第 7～9 课）",
-    version="0.3.0",
+    description="迷你测试平台 API（第 7～10 课）",
+    version="0.4.0",
     lifespan=lifespan,
 )
 

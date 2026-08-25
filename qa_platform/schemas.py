@@ -36,6 +36,7 @@ class JobResultOut(BaseModel):
     failed: int
     total: int
     message: str
+    ai_summary: str = ""
     created_at: str
 
 
