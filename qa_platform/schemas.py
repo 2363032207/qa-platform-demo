@@ -42,3 +42,19 @@ class JobResultOut(BaseModel):
 
 class JobDetailOut(JobOut):
     result: JobResultOut | None = None
+
+
+class GateEvaluateIn(BaseModel):
+    passed: int = Field(ge=0)
+    failed: int = Field(ge=0)
+    total: int = Field(ge=0)
+    ai_summary: str = ""
+
+
+class GateEvaluateOut(BaseModel):
+    passed: bool
+    reason: str
+    passed_count: int
+    failed_count: int
+    total: int
+    rule: str

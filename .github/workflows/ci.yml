@@ -30,6 +30,9 @@ jobs:
           mkdir -p reports
           pytest --junitxml=reports/junit.xml
 
+      - name: Quality gate
+        run: python scripts/check_gate.py reports/junit.xml
+
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4

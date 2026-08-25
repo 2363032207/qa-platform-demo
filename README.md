@@ -62,6 +62,7 @@ scripts\run_api.bat
 | `POST /api/jobs/next` | 领取下一个 queued 任务 | **Agent** |
 | `GET /api/jobs/{id}` | 任务详情 | 发起者/看板 |
 | `POST /api/jobs/{id}/result` | 回传执行结果 | **Agent** |
+| `POST /api/gates/evaluate` | 质量门禁评估 | CI / 发起者 |
 
 ## Agent 执行器（第 8 课）
 
@@ -86,6 +87,15 @@ scripts\run_api.bat
 .\scripts\run_ci_local.ps1
 ```
 
+本地也会跑 **质量门禁**（`scripts/check_gate.py`）。说明见 `docs/QUALITY_GATE.md`。
+
+单独检查门禁：
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest --junitxml=reports\junit.xml
+.\.venv\Scripts\python.exe scripts\check_gate.py reports\junit.xml
+```
+
 ### Docker
 
 ```powershell
@@ -104,4 +114,4 @@ docker run --rm qa-platform-demo
 - [x] 第 8 课：Agent 执行器
 - [x] 第 9 课：结果看板
 - [x] 第 10 课：AI 失败摘要
-- [ ] 第 11 课：质量门禁（待开始）
+- [ ] 第 11 课：质量门禁（进行中）

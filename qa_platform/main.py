@@ -12,6 +12,7 @@ from fastapi.templating import Jinja2Templates
 
 from qa_platform.dashboard import build_summary
 from qa_platform.database import init_db
+from qa_platform.gate import evaluate_counts
 from qa_platform.repository import (
     claim_next_job,
     create_job,
@@ -20,7 +21,15 @@ from qa_platform.repository import (
     list_jobs,
     submit_result,
 )
-from qa_platform.schemas import JobCreate, JobDetailOut, JobOut, JobResultCreate, JobResultOut
+from qa_platform.schemas import (
+    GateEvaluateIn,
+    GateEvaluateOut,
+    JobCreate,
+    JobDetailOut,
+    JobOut,
+    JobResultCreate,
+    JobResultOut,
+)
 
 
 @asynccontextmanager
@@ -31,8 +40,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="QA Platform Demo",
-    description="迷你测试平台 API（第 7～10 课）",
-    version="0.4.0",
+    description="迷你测试平台",
+    version="0.5.0",
     lifespan=lifespan,
 )
 
@@ -90,3 +99,15 @@ def api_submit_result(job_id: int, payload: JobResultCreate) -> JobResultOut:
     if result is None:
         raise HTTPException(status_code=404, detail="job not found")
     return result
+
+
+@app.post("/api/gates/evaluate", response_model=GateEvaluateOut)
+def api_evaluate_gate(payload: GateEvaluateIn) -> GateEvaluateOut:
+    """质量门禁评估：只认计数，ai_summary 不参与判定。"""
+    result = evaluate_counts(
+        passed=payload.passed,
+        failed=payload.failed,
+        total=payload.total,
+        ai_summary=payload.ai_summary,
+    )
+    return GateEvaluateOut(**result.to_dict())
